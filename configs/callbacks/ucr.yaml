@@ -1,0 +1,39 @@
+model_checkpoint:
+  _target_: pytorch_lightning.callbacks.ModelCheckpoint
+  _partial_: True
+  #  monitor: "val_MulticlassAccuracy" # name of the logged metric which determines when model is improving
+  mode: "max" # "max" means higher metric value is better, can be also "min"
+  save_top_k: 1 # save k best models (determined by above metric)
+  save_last: True # additionally always save model from last epoch
+  verbose: False
+  dirpath: ${paths.output_dir}/checkpoints
+  filename: "epoch_{epoch:03d}"
+  auto_insert_metric_name: False
+  save_on_train_epoch_end: False # if monitor train metric
+
+early_stopping:
+  _target_: pytorch_lightning.callbacks.EarlyStopping
+  _partial_: true
+  mode: "max" # "max" means higher metric value is better, can be also "min"
+  patience: 100 # how many validation epochs of not improving until training stops
+  min_delta: 0.0001 # minimum change in the monitored metric needed to qualify as an improvement
+  check_on_train_epoch_end: False # whether to run early stopping at the end of the training epoch
+
+my_early_stopping:
+  _target_: src.callbacks.MyEarlyStopping
+
+#init_parameters:
+#  _target_: src.callbacks.ParameterInitialization
+#  init_method: xavier
+#
+#LatentSpaceSaver:
+#  _target_: src.callbacks.LatentSpaceSaver
+
+#log_evaluation_metrices:
+#    _target_: src.callbacks.LogEvaluationMetrics
+#    num_classes: ${model.num_classes}
+
+#warmup_start:
+#  _target_: src.callbacks.WarmupStart
+#  lr: ${model.optimizer.lr}
+#  warmup_steps: 100

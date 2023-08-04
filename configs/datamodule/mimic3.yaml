@@ -1,0 +1,12 @@
+_target_: src.datasets.mimic3.mimic3.Mimic3
+
+data_dir: ${paths.data_dir}/mimic3_in_hospital_mortality
+batch_size: 128
+num_workers: 4
+is_test: True
+class_weight_file_name: class_weight.pt
+aggregation_minutes: 60
+ts_file_name_format: time_series_{}.csv
+demo_file_name: demographics.csv
+folder_format: "{}_aggregation_data"
+use_sample_weight: false

@@ -1,0 +1,5 @@
+_target_: src.datasets.mnist.Mnist
+
+download_dir: ${paths.data_dir}
+batch_size: 2000
+num_workers: 4

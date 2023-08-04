@@ -1,0 +1,27 @@
+defaults:
+  - _self_
+  - datamodule: ucr_2018
+  - model: ucr/gpvib_e_inception_d_flatten
+#  - hparams_search: ucr/gpvib_e_cnn1d_d_flatten
+  - trainer: gpu
+  - logger: tensorboard
+  - callbacks: ucr
+  - hydra: default
+  - debug:
+  - paths: default
+  - metrics: ucr
+  - extras: default
+
+seed:
+mode: debug
+optimized_metric: ${metrics.optimize}
+
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on metric specified in checkpoint callback
+ckpt_path:
+
+# name of the run, should be used along with experiment mode
+datamodule_name: ucr_2018
+model_name: gp_vib
+
+

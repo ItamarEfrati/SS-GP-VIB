@@ -1,0 +1,77 @@
+_target_: src.models.basics.medical_gpvib.MedicalGPVIB
+
+defaults:
+  - physionet_2012_default.yaml
+
+timeseries_encoder:
+  _target_: src.models.encoders.TimeSeriesDataEncoder2D
+  input_size: 111
+  ts_embedding_size: 60
+  n_cnn_layers: 4
+  h_kernel_size_1: -1
+  w_kernel_size_1: -1
+  h_kernel_size_2: -1
+  w_kernel_size_2: -1
+  h_kernel_size_3: -1
+  w_kernel_size_3: -1
+  h_kernel_size_4: -1
+  w_kernel_size_4: -1
+  h_padding_1: -1
+  w_padding_1: ${model.timeseries_encoder.h_padding_1}
+  h_padding_2: -1
+  w_padding_2: ${model.timeseries_encoder.h_padding_2}
+  h_padding_3: same
+  w_padding_3: ${model.timeseries_encoder.h_padding_3}
+  h_padding_4: same
+  w_padding_4: ${model.timeseries_encoder.h_padding_4}
+  dropout_1: -1
+  dropout_2: -1
+  dropout_3: -1
+  dropout_4: -1
+  out_channels_1: -1
+  out_channels_2: -1
+  out_channels_3: -1
+  out_channels_4: -1
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  encoding_size: -1
+  timeseries_size: 48
+
+demographic_encoder:
+  _target_: src.models.encoders.DemographicEncoder
+  hidden_size: -1
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+  input_size: 8
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  _partial_: True
+  precision_activation:
+    _target_: torch.nn.Softplus
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+
+
+decoder:
+  _target_: src.models.decoders.Cnn1DMultinomialDecoder
+  _partial_: True
+  z_dim: ${model.timeseries_encoder.encoding_size}
+  n_cnn_layers: -1
+  out_channels_1: -1
+  out_channels_2: -1
+  out_channels_3: -1
+  kernel_size_1: -1
+  kernel_size_2: -1
+  kernel_size_3: -1
+  padding_1: -1
+  padding_2: -1
+  padding_3: -1
+  dropout_1: -1
+  dropout_2: -1
+  dropout_3: -1
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+

@@ -1,0 +1,57 @@
+_target_: src.models.basics.ss_gp_vib.SemiSupervisedGPVIB
+
+defaults:
+  - hmnist_default.yaml
+
+timeseries_encoder:
+  _target_: src.models.encoders.TimeSeriesDataEncoder
+  input_size: -1
+  ts_embedding_size: 784
+  n_cnn_layers: 1
+  out_channels_1: -1
+  out_channels_2: -1
+  out_channels_3: -1
+  out_channels_4: -1
+  kernel_size_1: -1
+  kernel_size_2: -1
+  kernel_size_3: -1
+  kernel_size_4: -1
+  padding_1: -1
+  padding_2: -1
+  padding_3: -1
+  padding_4: -1
+  dropout_1: -1
+  dropout_2: -1
+  dropout_3: -1
+  dropout_4: -1
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  timeseries_size: 10
+  encoding_size: -1
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  _partial_: True
+  precision_activation:
+    _target_: torch.nn.Sigmoid
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+
+decoder:
+  _target_: src.models.decoders.FlattenMultinomialDecoder
+  _partial_: True
+  z_dim: ${model.timeseries_encoder.encoding_size}
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+
+data_decoder:
+  _target_: src.models.decoders.BernoulliDecoder
+  z_dim: ${model.timeseries_encoder.encoding_size}
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.timeseries_encoder.ts_embedding_size}

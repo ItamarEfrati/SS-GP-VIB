@@ -1,0 +1,51 @@
+_target_: src.models.basics.gpvib.GPVIB
+
+defaults:
+  - physionet_2012_default.yaml
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  cnn1d_in_channels: 37
+  cnn1d_out_channels: 16
+  kernel_size: 3
+  padding: same
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  precision_activation:
+    _target_: torch.nn.Softplus
+  z_dim: 16
+  z_dim_time_length: ${model.z_dim_time_length}
+  is_demographics: ${model.is_demographics_in_encoder}
+
+
+decoder:
+  _target_: src.models.decoders.Cnn2DMultinomialDecoder
+  _partial_: True
+  z_dim: ${model.encoder.z_dim}
+#  z_dim_time_length: ${model.z_dim_time_length}
+  out_channels_1: -1
+  out_channels_2: -1
+  out_channels_3: -1
+  h_kernel_size_1: 3
+  w_kernel_size_1: -1
+  h_kernel_size_2: 3
+  w_kernel_size_2: -1
+  h_kernel_size_3: -1
+  w_kernel_size_3: -1
+  h_padding_1:  1
+  w_padding_1:  -1
+  h_padding_2: 1
+  w_padding_2: -1
+  h_padding_3: -1
+  w_padding_3: -1
+  dropout_1: 0
+  dropout_2: 0
+  dropout_3: -1
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+  is_demographics: ${model.is_demographics_in_decoder}
+

@@ -1,0 +1,77 @@
+# @package _global_
+
+# example hyperparameter optimization of some experiment with Optuna:
+# python train_old.py -m hparams_search=mnist_optuna experiment=example
+
+defaults:
+  - override /hydra/sweeper: optuna
+
+# choose metric which will be optimized by Optuna
+# make sure this is the correct name of some metric logged in lightning module!
+optimized_metric: ${metrics.optimize}
+
+# here we define Optuna hyperparameter search
+# it optimizes for value returned from function with @hydra.main decorator
+# docs: https://hydra.cc/docs/next/plugins/optuna_sweeper
+hydra:
+  mode: "MULTIRUN" # set hydra to multirun by default if this config is attached
+
+  sweeper:
+    _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+
+    # storage URL to persist optimization results
+    # for example, you can use SQLite if you set 'sqlite:///example.db'
+    storage: null
+
+    # name of the study to persist optimization results
+    study_name: phsionet_2012
+
+    # number of parallel workers
+    n_jobs: 1
+
+    # 'minimize' or 'maximize' the objective
+    direction: maximize
+
+    # total number of runs that will be executed
+    n_trials: 180
+
+    # choose Optuna hyperparameter sampler
+    # you can choose bayesian sampler (tpe), random search (without optimization), grid sampler, and others
+    # docs: https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler:
+      _target_: optuna.samplers.TPESampler
+      seed: 42
+      n_startup_trials: 110 # number of random sampling runs before optimization starts
+
+    # define hyperparameter search space
+    params:
+      datamodule.batch_size: choice(64, 128)
+      model.optimizer.lr: range(0.00001, 0.01, 0.00001)
+      model.beta: range(0.0001, 0.01, 0.00001)
+      model.alpha: range(0.5, 1.5, 0.01)
+      model.optimizer.weight_decay: range(0.0001, 0.05, 0.00001)
+
+#      callbacks.warmup_start.warmup_steps: choice(0, 10, 100)
+      model.timeseries_encoder.ts_embedding_size: choice(4, 16, 32, 48, 60)
+      model.timeseries_encoder.h_kernel_size_1: choice(14, 21, 24, 28, 35, 42)
+#      model.timeseries_encoder.w_kernel_size_1: choice(14, 21, 24, 28, 35, 42)
+      model.timeseries_encoder.h_padding_1: choice(0, 1, 2, 3, same)
+#      model.timeseries_encoder.w_padding_1: choice(0, 1, 2, 3, same)
+      model.timeseries_encoder.dropout_1: choice(0, 10, 20, 30, 40)
+      model.timeseries_encoder.dropout_2: choice(0, 10, 20, 30, 40)
+      model.timeseries_encoder.out_channels_1: choice(4, 8, 12, 16, 20)
+      model.timeseries_encoder.encoding_size: choice(2, 4, 8, 16)
+
+      model.decoder.dim_feedforward: choice(64, 128, 256, 512)
+      model.decoder.attention_dropout: range(0.0, 0.4, 0.05)
+      model.decoder.aggregation: choice('sum', 'mean', 'max', 'flatten')
+
+      +n_encoder_layers: choice(1, 2)
+      +n_decoder_layers: choice(0, 1, 2)
+
+      model.sigma: range(1, 15, step=1)
+      model.num_samples: choice(1, 4, 8, 16)
+
+    custom_search_space: utils.optuna_hooks.physionet_2012_gpvib_e_cnn2d_d_attention
+
+is_ensemble: ${model.is_ensemble}

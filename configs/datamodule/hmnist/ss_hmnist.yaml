@@ -1,0 +1,12 @@
+_target_: src.datasets.hmnist.ss_hmnist.SemiSupervisedHMnist
+
+download_dir: ${paths.data_dir}/HMNIST
+download_url: https://www.dropbox.com/s/xzhelx89bzpkkvq/hmnist_mnar.npz?dl=1
+file_name: hmnist_mnar.npz
+batch_size: 64
+num_workers: 2
+num_labeled: 1000
+num_val: 5000
+is_data_missing: False
+num_augments: 1
+validation_split_seed: 42

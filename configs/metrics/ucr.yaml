@@ -1,0 +1,14 @@
+# metrics to present on hparams table used for test results
+
+metrics:
+  val_loss: 0
+  val_BinaryAccuracy: 0
+  val_BinaryPrecision: 0
+  val_BinaryRecall: 0
+  test_loss: 0
+  test_BinaryAccuracy: 0
+  test_BinaryPrecision: 0
+  test_BinaryRecall: 0
+  optimize_val_BinaryAccuracy: 0
+
+optimize: val_BinaryAccuracy

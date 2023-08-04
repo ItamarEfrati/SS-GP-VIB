@@ -1,0 +1,9 @@
+_target_: src.datasets.ucr.ucr_2015.UCR
+_partial_: true
+
+download_dir: ${paths.data_dir}/ucr
+download_url: pass
+file_name: UCR_TS_Archive_2015
+batch_size: 64
+num_workers: 4
+

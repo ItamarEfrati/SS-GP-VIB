@@ -1,0 +1,49 @@
+_target_: src.models.basics.vib.VIB
+
+encoder:
+  _target_: src.models.encoders.DiagonalEncoder
+  hidden_sizes: [7840 ,1024, 1024]
+  encoding_size: 40
+
+decoder:
+  _target_: src.models.decoders.MultinomialDecoder
+  z_dim: 40
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-3
+  weight_decay: 0.005
+
+scheduler:
+#  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#  _partial_: true
+#  factor: 0.5
+#  patience: 3
+#  mode: ${callbacks.early_stopping.mode}
+#  threshold: 0.001
+#  cooldown: 0
+#  min_lr: 1e-5
+
+# vib
+alpha: -1
+class_weight_file:
+monitor_metric: #${callbacks.early_stopping.monitor} # for the scheduler
+is_sample_weight: True
+
+
+# vib
+num_classes: 10
+beta: 0.001
+num_samples: 10
+
+# to treat every item in a sequence as independent and at the end perform ensemble
+is_ensemble: False
+
+
+

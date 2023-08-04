@@ -1,0 +1,33 @@
+_target_: src.models.basics.gpvib.GPVIB
+
+defaults:
+  - physionet_2012_default.yaml
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  cnn1d_in_channels: 37
+  cnn1d_out_channels: 128
+  kernel_size: 3
+  padding: same
+  hidden_size_1: 128
+  hidden_size_2: -1
+  hidden_size_3: -1
+  precision_activation:
+    _target_: torch.nn.Softplus
+  z_dim: 8
+  z_dim_time_length: ${model.z_dim_time_length}
+  is_demographics: ${model.is_demographics}
+
+decoder:
+  _target_: src.models.decoders.RNNMultinomialDecoder
+  z_dim: ${model.encoder.z_dim}
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+  time_length: ${model.z_dim_time_length}
+  rnn_n_layers: 1
+  lstm_hidden_size: 16
+  hidden_size_1: 72
+  hidden_size_2: 36
+  hidden_size_3: -1
+
+

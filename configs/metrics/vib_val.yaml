@@ -1,0 +1,12 @@
+# metrics to present on hparams table used for test results
+
+metrics:
+  val_loss: 0
+  val_kl_mean: 0
+  val_mean_negative_log_likelihood: 0
+  val_accuracy: 0
+  val_auroc: 0
+  val_auprc: 0
+  optimize_val_auroc: 0
+
+optimize: val_auroc

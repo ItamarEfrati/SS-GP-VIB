@@ -1,0 +1,42 @@
+_target_: src.models.basics.gpvib.GPVIB
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  cnn1d_sizes: [784 ,256]
+  kernel_size: [3]
+  padding: ['same']
+  hidden_sizes: [256, 256]
+  precision_activation:
+    _target_: torch.nn.Softplus
+  z_dim: 40
+
+
+decoder:
+  _target_: src.models.decoders.MultinomialDecoder
+  z_dim: ${model.encoder.z_dim}
+  time_length: ${model.time_length}
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-3
+  weight_decay: 0.005
+
+# vib
+num_classes: 10
+beta: 0.001
+num_samples: 10
+
+# time series vib
+is_ensemble: True
+time_length: 10
+
+# gp
+kernel: cauchy
+kernel_scales: 1
+sigma: 0.1
+length_scale: 2
+
+

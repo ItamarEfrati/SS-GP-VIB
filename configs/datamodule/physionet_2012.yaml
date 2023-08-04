@@ -1,0 +1,21 @@
+_target_: src.datasets.physionet_2012.Physionet2012
+
+download_dir: ${paths.data_dir}/physionet_2012
+data_urls: ['http://physionet.org/files/challenge-2012/1.0.0/set-a.tar.gz',
+               'http://physionet.org/files/challenge-2012/1.0.0/set-b.tar.gz',
+               'http://physionet.org/files/challenge-2012/1.0.0/set-c.tar.gz']
+outcome_urls: ['http://physionet.org/files/challenge-2012/1.0.0/Outcomes-a.txt?download',
+               'http://physionet.org/files/challenge-2012/1.0.0/Outcomes-b.txt?download',
+               'http://physionet.org/files/challenge-2012/1.0.0/Outcomes-c.txt?download']
+folder_format: "{}_aggregation_data"
+ts_file_name_format: time_series_{}.csv
+sr_file_name_format: sample_rate_{}.csv
+length_file_name_format: length_{}.csv
+demo_file_name: demographics.csv
+target_file_name: targets.csv
+class_weight_file_name: class_weight.pt
+batch_size: 128
+num_workers: 4
+label: In-hospital_death
+aggregation_minutes: 60
+use_sample_weight: False

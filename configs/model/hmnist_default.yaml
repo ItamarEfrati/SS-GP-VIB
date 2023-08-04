@@ -1,0 +1,43 @@
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: -1
+  weight_decay: -1
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  factor: 0.5
+  patience: 3
+  mode: ${callbacks.early_stopping.mode}
+  threshold: 0.001
+  cooldown: 0
+  min_lr: 1e-5
+
+# vib
+num_classes: 10
+alpha: -1 # scaling factor for positive class weight
+beta: -1
+num_samples: -1
+class_weight_file:
+monitor_metric: ${callbacks.early_stopping.monitor} # for the scheduler
+use_class_weight: false
+sample_during_evaluation: false
+
+# time series vib
+is_ensemble: False # always false
+
+# gp_vib
+kernel: cauchy
+sigma: -1
+length_scale: -1
+kernel_scales: -1
+
+
+
+
+
+
+
+
+

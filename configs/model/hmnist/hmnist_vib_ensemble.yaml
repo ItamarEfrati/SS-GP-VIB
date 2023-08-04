@@ -1,0 +1,29 @@
+_target_: src.models.basics.vib.VIB
+
+encoder:
+  _target_: src.models.encoders.DiagonalEncoder
+  hidden_sizes: [784 ,1024, 1024]
+  z_dim: 40
+
+decoder:
+  _target_: src.models.decoders.MultinomialDecoder
+  hidden_sizes: [40, 10]
+  num_samples: ${model.num_samples}
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-3
+  weight_decay: 0.005
+
+
+# vib
+num_classes: 10
+beta: 0.001
+num_samples: 10
+
+# to treat every item in a sequence as independent and at the end perform ensemble
+is_ensemble: True
+
+
+

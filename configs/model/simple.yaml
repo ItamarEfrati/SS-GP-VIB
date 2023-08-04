@@ -1,0 +1,24 @@
+_target_: src.models.basics.simple.SimpleNet
+_partial_: True
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.1
+  weight_decay: 0.05
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  factor: 0.5
+  patience: 50
+  mode: ${callbacks.early_stopping.mode}
+  threshold: 0.00001
+  cooldown: 0
+  min_lr: 1e-5
+
+# vib
+num_classes:
+monitor_metric: ${callbacks.early_stopping.monitor} # for the scheduler
+input_size:
+

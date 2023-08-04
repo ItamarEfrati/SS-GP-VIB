@@ -1,0 +1,12 @@
+/logs/*/
+/notebooks/.ipynb_checkpoints/
+/.idea
+/data/*/
+**/__pycache__/
+/notebooks
+/OLD/
+/assets/
+/src/train.log
+/src/notebooks/
+/src/eval.log
+*.log

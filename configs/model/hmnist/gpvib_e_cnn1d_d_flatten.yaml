@@ -1,0 +1,79 @@
+_target_: src.models.basics.gpvib.GPVIB
+
+timeseries_encoder:
+  _target_: src.models.encoders.TimeSeriesDataEncoder
+  input_size: -1
+  ts_embedding_size: 784
+  n_cnn_layers: 1
+  out_channels_1: 256
+  out_channels_2: 256
+  out_channels_3: -1
+  out_channels_4: -1
+  kernel_size_1: 4
+  kernel_size_2: -1
+  kernel_size_3: -1
+  kernel_size_4: -1
+  padding_1: same
+  padding_2: -1
+  padding_3: -1
+  padding_4: -1
+  dropout_1: 0
+  dropout_2: -1
+  dropout_3: -1
+  dropout_4: -1
+  hidden_size_1: 256
+  hidden_size_2: -1
+  hidden_size_3: -1
+  timeseries_size: 10
+  encoding_size: 256
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  _partial_: True
+  precision_activation:
+    _target_: torch.nn.Sigmoid
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+
+decoder:
+  _target_: src.models.decoders.FlattenMultinomialDecoder
+  _partial_: True
+  z_dim: ${model.timeseries_encoder.encoding_size}
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0018
+  weight_decay: 0.005
+
+scheduler:
+#  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+#  _partial_: true
+#  factor: 0.5
+#  patience: 3
+#  mode: ${callbacks.early_stopping.mode}
+#  threshold: 0.001
+#  cooldown: 0
+#  min_lr: 1e-5
+
+# vib
+num_classes: 10
+alpha: -1
+beta: 0.0034
+num_samples: 50
+class_weight_file:
+monitor_metric: #${callbacks.early_stopping.monitor} # for the scheduler
+is_sample_weight: True
+
+# time series vib
+is_ensemble: False # always false
+
+# gp_vib
+kernel: cauchy
+sigma: 1
+length_scale: 2
+kernel_scales: 1

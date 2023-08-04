@@ -1,0 +1,45 @@
+_target_: src.models.basics.medical_gpvib.MedicalGPVIB
+
+defaults:
+  - physionet_2012_default.yaml
+
+timeseries_encoder:
+  _target_: src.models.encoders.TimeSeriesDataEncoderAttention
+  input_size: 111
+  ts_embedding_size: -1
+  nhead: -1,
+  dim_feedforward: -1
+  attention_dropout: -1
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  encoding_size: -1
+  timeseries_size: 48
+  positional_encoder:
+    _target_: src.models.encoders.PositionalEncoder
+    max_len: ${model.timeseries_encoder.timeseries_size}
+    encoding_size: ${model.timeseries_encoder.ts_embedding_size}
+
+demographic_encoder:
+  _target_: src.models.encoders.DemographicEncoder
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+  input_size: 8
+
+encoder:
+  _target_: src.models.encoders.BandedJointEncoder
+  _partial_: True
+  precision_activation:
+    _target_: torch.nn.Softplus
+  encoding_size: ${model.timeseries_encoder.encoding_size}
+
+decoder:
+  _target_: src.models.decoders.FlattenMultinomialDecoder
+  _partial_: True
+  z_dim: ${model.timeseries_encoder.encoding_size}
+  hidden_size_1: -1
+  hidden_size_2: -1
+  hidden_size_3: -1
+  num_samples: ${model.num_samples}
+  output_size: ${model.num_classes}
+
+
